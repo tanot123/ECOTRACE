@@ -28,10 +28,10 @@ const props = defineProps<{
         <span :class="isMobile ? 'mt-1' : ''">Scanner</span>
       </router-link>
       
-      <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
+      <router-link to="/scheduler" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
         <Calendar class="w-5 h-5" :class="!isMobile && 'mr-3'" />
         <span :class="isMobile ? 'mt-1' : ''">Scheduler</span>
-      </a>
+      </router-link>
       
       <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
         <Trophy class="w-5 h-5" :class="!isMobile && 'mr-3'" />

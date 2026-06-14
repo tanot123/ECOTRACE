@@ -5,9 +5,9 @@ from app.config import settings
 
 # Configure Gemini
 genai.configure(api_key=settings.GEMINI_API_KEY)
-# Use a multimodal model, e.g., gemini-1.5-flash which is fast and supports images
-# We will use gemini-1.5-flash as it is the standard vision model currently.
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Use a multimodal model, e.g., gemini-2.5-flash which is fast and supports images
+# We will use gemini-2.5-flash as it is the standard vision model currently.
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 class GeminiService:
     @staticmethod

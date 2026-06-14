@@ -46,7 +46,7 @@ class ScanService:
             analysis_result=analysis,
             raw_response=json.dumps(analysis),
             processing_time_ms=processing_time,
-            gemini_model="gemini-1.5-flash",
+            gemini_model="gemini-2.5-flash",
             status=status
         )
         db.add(scan_record)
