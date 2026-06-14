@@ -27,6 +27,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/challenges',
+    name: 'challenges',
+    component: () => import('../pages/ChallengesPage.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/settings',
     name: 'settings',
     component: () => import('../pages/SettingsPage.vue'),

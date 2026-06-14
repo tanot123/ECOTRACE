@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { Home, ScanLine, Calendar, Trophy, Settings, LogOut } from 'lucide-vue-next'
 import { useAuthStore } from '../../stores/auth'
+import { useRoute } from 'vue-router'
 
 const authStore = useAuthStore()
+const route = useRoute()
 
 const props = defineProps<{
   isMobile: boolean
 }>()
+
+const isActive = (path: string) => route.path.startsWith(path)
 </script>
 
 <template>
@@ -18,27 +22,27 @@ const props = defineProps<{
     </div>
     
     <div :class="[isMobile ? 'flex flex-row justify-around w-full' : 'flex flex-col flex-grow px-4 space-y-1']">
-      <router-link to="/dashboard" class="flex items-center px-4 py-3 text-emerald-700 bg-emerald-50 rounded-lg" :class="isMobile ? 'flex-col justify-center px-2 py-1 bg-transparent text-xs' : ''">
+      <router-link to="/dashboard" :class="['flex items-center px-4 py-3 rounded-lg transition-colors', isActive('/dashboard') ? 'text-emerald-700 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50', isMobile ? 'flex-col justify-center px-2 py-1 bg-transparent text-xs' : '']">
         <Home class="w-5 h-5" :class="!isMobile && 'mr-3'" />
         <span :class="isMobile ? 'mt-1' : ''">Dashboard</span>
       </router-link>
       
-      <router-link to="/scanner" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
+      <router-link to="/scanner" :class="['flex items-center px-4 py-3 rounded-lg transition-colors', isActive('/scanner') ? 'text-emerald-700 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50', isMobile ? 'flex-col justify-center px-2 py-1 bg-transparent text-xs' : '']">
         <ScanLine class="w-5 h-5" :class="!isMobile && 'mr-3'" />
         <span :class="isMobile ? 'mt-1' : ''">Scanner</span>
       </router-link>
       
-      <router-link to="/scheduler" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
+      <router-link to="/scheduler" :class="['flex items-center px-4 py-3 rounded-lg transition-colors', isActive('/scheduler') ? 'text-emerald-700 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50', isMobile ? 'flex-col justify-center px-2 py-1 bg-transparent text-xs' : '']">
         <Calendar class="w-5 h-5" :class="!isMobile && 'mr-3'" />
         <span :class="isMobile ? 'mt-1' : ''">Scheduler</span>
       </router-link>
       
-      <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
+      <router-link to="/challenges" :class="['flex items-center px-4 py-3 rounded-lg transition-colors', isActive('/challenges') ? 'text-emerald-700 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50', isMobile ? 'flex-col justify-center px-2 py-1 bg-transparent text-xs' : '']">
         <Trophy class="w-5 h-5" :class="!isMobile && 'mr-3'" />
         <span :class="isMobile ? 'mt-1' : ''">Challenges</span>
-      </a>
+      </router-link>
       
-      <router-link to="/settings" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" :class="isMobile ? 'flex-col justify-center px-2 py-1 text-xs' : ''">
+      <router-link to="/settings" :class="['flex items-center px-4 py-3 rounded-lg transition-colors', isActive('/settings') ? 'text-emerald-700 bg-emerald-50' : 'text-gray-600 hover:bg-gray-50', isMobile ? 'flex-col justify-center px-2 py-1 bg-transparent text-xs' : '']">
         <Settings class="w-5 h-5" :class="!isMobile && 'mr-3'" />
         <span :class="isMobile ? 'mt-1' : ''">Settings</span>
       </router-link>
