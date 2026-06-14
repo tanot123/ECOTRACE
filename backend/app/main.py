@@ -8,6 +8,7 @@ from app.database import engine, Base
 import app.models.user
 import app.models.appliance
 import app.models.reading
+import app.models.scan
 
 app = FastAPI(
     title="EcoTrace AI API",
@@ -32,9 +33,10 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["dashboard"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
-from app.api.v1.endpoints import seed, energy
+from app.api.v1.endpoints import seed, energy, scan
 app.include_router(seed.router, prefix="/api/v1/seed", tags=["seed"])
 app.include_router(energy.router, prefix="/api/v1/energy", tags=["energy"])
+app.include_router(scan.router, prefix="/api/v1/scan", tags=["scan"])
 
 @app.get("/health", tags=["health"])
 async def health_check():
