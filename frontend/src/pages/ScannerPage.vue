@@ -32,9 +32,9 @@ const handleCapture = async (file: File) => {
     })
     
     if (response.data.status === 'error') {
-      errorMsg.value = response.data.analysis.message || 'Gemini could not analyze this image.'
+      errorMsg.value = response.data.analysis_result.message || 'Gemini could not analyze this image.'
     } else {
-      scanResult.value = response.data.analysis
+      scanResult.value = response.data.analysis_result
     }
   } catch (err: any) {
     console.error(err)

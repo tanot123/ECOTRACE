@@ -7,7 +7,7 @@ class ScanResultResponse(BaseModel):
     id: UUID
     scan_type: str
     status: str
-    analysis: Dict[str, Any]
+    analysis_result: Dict[str, Any]
     image_thumbnail_url: Optional[str] = None
     scanned_at: datetime
     processing_time_ms: Optional[int] = None
