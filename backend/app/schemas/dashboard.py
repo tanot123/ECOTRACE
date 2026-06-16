@@ -35,6 +35,7 @@ class WaterData(BaseModel):
     daily_trend: List[DailyTrendItem]
 
 class VampireDevice(BaseModel):
+    id: str
     name: str
     standby_watts: float
     yearly_cost: float

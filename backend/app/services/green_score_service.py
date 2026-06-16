@@ -88,6 +88,7 @@ class GreenScoreService:
         vampire_devices = []
         for v in vampires:
             vampire_devices.append(VampireDevice(
+                id=str(v.id),
                 name=v.name,
                 standby_watts=v.standby_watts,
                 yearly_cost=round((v.standby_watts / 1000) * (24 - v.avg_daily_hours) * 365 * 0.12, 2)
@@ -100,6 +101,20 @@ class GreenScoreService:
         if week_liters > 2000: score -= 5
         score -= min(15, len(vampires) * 2)
         
+        from app.services.challenge_service import ChallengeService
+        from uuid import UUID
+        
+        active_uc = await ChallengeService.get_active(db, UUID(user_id))
+        challenge_items = []
+        for uc in active_uc:
+            challenge_items.append(ChallengeItem(
+                id=str(uc.challenge_id),
+                title=uc.challenge.title,
+                progress=uc.current_progress,
+                target=uc.target_value,
+                unit=uc.challenge.target_unit
+            ))
+
         return DashboardSummary(
             green_score=GreenScoreData(
                 current=round(score, 1),
@@ -129,12 +144,8 @@ class GreenScoreService:
                 devices=vampire_devices[:3]
             ),
             active_challenges=ChallengesData(
-                count=3,
-                challenges=[
-                    ChallengeItem(id="c1", title="Turn off AC for 2 hours", progress=1.5, target=2.0, unit="hrs"),
-                    ChallengeItem(id="c2", title="Keep showers under 5 min", progress=3.0, target=7.0, unit="days"),
-                    ChallengeItem(id="c3", title="Unplug Vampire Devices", progress=1.0, target=3.0, unit="devices"),
-                ]
+                count=len(challenge_items),
+                challenges=challenge_items[:3]
             ),
             period=PeriodData(
                 start=week_ago,

@@ -129,12 +129,14 @@ class ChallengeService:
         result = await db.execute(select(UserChallenge).where(UserChallenge.user_id == user_id, UserChallenge.status == "active"))
         active_challenges = result.scalars().all()
         
-        # Hydrate with Challenge template
+        # Hydrate and evaluate
+        evaluated = []
         for uc in active_challenges:
-            c_res = await db.execute(select(Challenge).where(Challenge.id == uc.challenge_id))
-            uc.challenge = c_res.scalars().first()
+            evaluated_uc = await ChallengeService.evaluate_progress(db, user_id, uc.id)
+            if evaluated_uc.status == "active":
+                evaluated.append(evaluated_uc)
             
-        return active_challenges
+        return evaluated
 
     @staticmethod
     async def get_completed(db: AsyncSession, user_id: UUID):
@@ -202,7 +204,7 @@ class ChallengeService:
 
         # Evaluate based on metric type
         if challenge.metric_type == "scans_count":
-            res = await db.execute(select(func.count(ScanResult.id)).where(ScanResult.user_id == user_id, ScanResult.created_at >= uc.started_at))
+            res = await db.execute(select(func.count(ScanResult.id)).where(ScanResult.user_id == user_id, ScanResult.scanned_at >= uc.started_at))
             uc.current_progress = res.scalar() or 0
         elif challenge.metric_type == "vampire_resolved":
             res = await db.execute(select(func.count(Appliance.id)).where(Appliance.user_id == user_id, Appliance.is_energy_vampire == True, Appliance.is_active == False, Appliance.updated_at >= uc.started_at))

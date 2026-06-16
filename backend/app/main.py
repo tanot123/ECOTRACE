@@ -1,8 +1,8 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import auth, users
-from app.api.v1.endpoints import dashboard
+from app.api.v1.endpoints import dashboard, auth, users
 
 from app.database import engine, Base
 import app.models.user
@@ -12,16 +12,18 @@ import app.models.scan
 import app.models.schedule
 import app.models.challenge
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
 app = FastAPI(
     title="EcoTrace AI API",
     description="Backend API for EcoTrace AI MVP",
     version="1.0.0",
+    lifespan=lifespan,
 )
-
-@app.on_event("startup")
-async def startup_event():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 # CORS middleware
 app.add_middleware(
@@ -42,10 +44,6 @@ app.include_router(scan.router, prefix="/api/v1/scan", tags=["scan"])
 app.include_router(schedule.router, prefix="/api/v1/schedule", tags=["schedule"])
 app.include_router(challenges.router, prefix="/api/v1/challenges", tags=["challenges"])
 
-@app.get("/health", tags=["health"])
-async def health_check():
-    return {"status": "healthy"}
-
-@app.get("/api/v1/health")
+@app.get("/api/v1/health", tags=["health"])
 async def api_health_check():
     return {"status": "healthy"}

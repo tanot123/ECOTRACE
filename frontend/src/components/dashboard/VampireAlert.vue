@@ -1,9 +1,22 @@
 <script setup lang="ts">
 import { Zap, Plug, CheckCircle2 } from 'lucide-vue-next'
+import api from '../../services/api'
+import { useDashboardStore } from '../../stores/dashboard'
 
 const props = defineProps<{
-  vampires: Array<{ name: string; standby_watts: number; yearly_cost: number }>
+  vampires: Array<{ id: string; name: string; standby_watts: number; yearly_cost: number }>
 }>()
+
+const dashboardStore = useDashboardStore()
+
+const resolveVampire = async (id: string) => {
+  try {
+    await api.post(`/energy/appliances/${id}/resolve`)
+    dashboardStore.fetchSummary() // Refresh to remove it from the list
+  } catch (err) {
+    console.error("Failed to resolve vampire", err)
+  }
+}
 </script>
 
 <template>
@@ -30,7 +43,7 @@ const props = defineProps<{
             </p>
           </div>
         </div>
-        <button class="text-gray-400 hover:text-emerald-500 transition-colors" title="Mark as resolved">
+        <button @click="resolveVampire(device.id)" class="text-gray-400 hover:text-emerald-500 transition-colors" title="Mark as resolved">
           <CheckCircle2 class="w-5 h-5" />
         </button>
       </div>

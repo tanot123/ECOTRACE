@@ -79,7 +79,11 @@ async def get_vampires(
     db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(
-        select(Appliance).where(Appliance.user_id == current_user.id, Appliance.is_energy_vampire == True)
+        select(Appliance).where(
+            Appliance.user_id == current_user.id, 
+            Appliance.is_energy_vampire == True,
+            Appliance.is_active == True
+        )
     )
     vampires = result.scalars().all()
     
@@ -108,3 +112,20 @@ async def get_vampires(
             )
         )
     return suggestions
+
+@router.post("/appliances/{appliance_id}/resolve")
+async def resolve_vampire(
+    appliance_id: str,
+    current_user = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    from uuid import UUID
+    result = await db.execute(select(Appliance).where(Appliance.id == UUID(appliance_id), Appliance.user_id == current_user.id))
+    appliance = result.scalars().first()
+    if not appliance:
+        raise HTTPException(status_code=404, detail="Appliance not found")
+        
+    appliance.is_active = False
+    appliance.updated_at = datetime.utcnow()
+    await db.commit()
+    return {"status": "resolved"}
